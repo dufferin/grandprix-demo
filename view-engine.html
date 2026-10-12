@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>View Engine — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#f4f6fa;color:#0f172a;font:14px/1.5 'IBM Plex Sans Thai',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;background:none;color:inherit}
+.hide{display:none!important}
+
+.topbar{background:#000;color:#bbb;font-size:12px;padding:6px 14px;display:flex;gap:10px;align-items:center}
+.topbar b{color:#fff;letter-spacing:.05em}
+.topbar .tag{background:#2a2a2a;color:#d4f53c;border-radius:99px;padding:2px 9px;font-weight:600}
+.topbar .sp{flex:1}
+.topbar button{border:1px solid #333;border-radius:99px;padding:3px 10px;color:#bbb}
+
+.app{display:grid;grid-template-columns:212px 1fr;height:calc(100vh - 29px)}
+.side{background:#0f172a;color:#cbd5e1;padding:14px 10px;overflow:auto}
+.side .b{font-weight:700;color:#fff;font-size:12px;letter-spacing:.12em;padding:4px 10px 14px}
+.side .b small{display:block;color:#64748b;letter-spacing:0;font-weight:500;margin-top:3px;font-size:11px}
+.side .grp{font-size:10px;letter-spacing:.14em;color:#475569;padding:12px 10px 5px;font-weight:700}
+.side a{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:9px;font-size:13.5px;color:#cbd5e1;text-decoration:none}
+.side a:hover{background:#1e293b}
+.side a.on{background:#1e293b;color:#fff;font-weight:500}
+.side a .c{margin-left:auto;font-size:11px;color:#64748b}
+
+.main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.hd{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 18px 0}
+.hd h1{margin:0 0 2px;font-size:19px;display:flex;align-items:center;gap:8px}
+.hd .sub{color:#64748b;font-size:12.5px;margin-bottom:10px}
+.vtabs{display:flex;gap:2px;align-items:flex-end;overflow-x:auto}
+.vtab{padding:7px 13px;border-radius:9px 9px 0 0;font-size:13px;color:#475569;white-space:nowrap;display:flex;align-items:center;gap:6px;border:1px solid transparent;border-bottom:0}
+.vtab:hover{background:#f8fafc}
+.vtab.on{background:#f4f6fa;color:#0f172a;font-weight:500;border-color:#e2e8f0}
+.vtab .lk{font-size:10px;opacity:.55}
+.vtab.add{color:#64748b}
+
+.tb{background:#f4f6fa;border-bottom:1px solid #e2e8f0;padding:8px 18px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;background:#e9edf3;border-radius:9px;padding:2px}
+.seg button{padding:5px 11px;border-radius:7px;font-size:12.5px;color:#475569;display:flex;align-items:center;gap:5px}
+.seg button.on{background:#fff;color:#0f172a;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tbtn{border:1px solid #d7dee8;background:#fff;border-radius:9px;padding:5px 11px;font-size:12.5px;color:#334155;display:flex;align-items:center;gap:6px}
+.tbtn:hover{border-color:#94a3b8}
+.tbtn.act{border-color:#0f172a;background:#0f172a;color:#fff}
+.tbtn .n{background:#334155;color:#fff;border-radius:99px;font-size:10px;padding:0 6px;font-weight:600}
+.tbtn.act .n{background:#fff;color:#0f172a}
+.tb .sp{flex:1}
+.srch{border:1px solid #d7dee8;background:#fff;border-radius:9px;padding:5px 11px;width:190px}
+.dirty{color:#b45309;font-size:12px;display:flex;align-items:center;gap:7px}
+.save{background:#0f172a;color:#fff;border-radius:8px;padding:5px 12px;font-size:12.5px}
+
+.pop{position:absolute;z-index:40;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 14px 44px rgba(15,23,42,.16);padding:12px;min-width:330px}
+.pop h4{margin:0 0 9px;font-size:12px;letter-spacing:.06em;color:#64748b;font-weight:600}
+.pop .row{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.pop select,.pop input{border:1px solid #d7dee8;border-radius:8px;padding:5px 8px;font-size:13px;background:#fff}
+.pop .x{color:#b91c1c;padding:2px 6px;font-size:15px}
+.pop .addf{color:#0f172a;font-size:12.5px;font-weight:500;padding:5px 0;display:flex;gap:6px;align-items:center}
+.pop .lgc{background:#eef2f7;border-radius:7px;padding:3px 8px;font-size:11px;font-weight:600;color:#475569}
+.pop label.ck{display:flex;align-items:center;gap:8px;padding:5px 4px;font-size:13px;border-radius:7px;cursor:pointer}
+.pop label.ck:hover{background:#f8fafc}
+.pop .hint{font-size:11.5px;color:#94a3b8;margin-top:8px;line-height:1.5;border-top:1px solid #f1f5f9;padding-top:8px}
+
+.body{flex:1;overflow:auto;padding:14px 18px 80px}
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;font-size:13px}
+th{background:#f8fafc;text-align:left;padding:9px 11px;font-weight:600;color:#475569;font-size:12px;border-bottom:1px solid #e2e8f0;white-space:nowrap;position:sticky;top:0;z-index:2}
+th.srt{color:#0f172a}
+td{padding:8px 11px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fafbfd}
+tr.sel td{background:#eff6ff!important}
+td.ed{cursor:text;border-radius:5px}
+td.ed:hover{outline:1px solid #cbd5e1;outline-offset:-1px}
+td input,td select{width:100%;border:1px solid #0f172a;border-radius:6px;padding:4px 6px;font-size:13px}
+.gh td{background:#eef2f7!important;font-weight:600;color:#334155;font-size:12.5px;padding:7px 11px;cursor:pointer}
+.gh .cn{color:#64748b;font-weight:400;margin-left:7px}
+.pill{display:inline-block;border-radius:99px;padding:2px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.av{width:26px;height:26px;border-radius:50%;background:#0f172a;color:#fff;display:inline-grid;place-items:center;font-size:11px;font-weight:600;margin-right:8px;vertical-align:middle}
+.lnk{color:#1d4ed8;text-decoration:none}
+.lnk:hover{text-decoration:underline}
+.mono{font-variant-numeric:tabular-nums}
+.empty{background:#fff;border:1px dashed #cbd5e1;border-radius:12px;padding:50px;text-align:center;color:#94a3b8}
+
+.kb{display:flex;gap:12px;align-items:flex-start;overflow-x:auto;padding-bottom:12px}
+.kcol{flex:0 0 268px;background:#eef2f7;border-radius:12px;padding:9px}
+.kcol.over{background:#dbeafe;outline:2px dashed #60a5fa}
+.kcol .kh{display:flex;align-items:center;gap:7px;padding:3px 5px 9px;font-size:13px;font-weight:600}
+.kcol .kh .n{background:#fff;border-radius:99px;padding:0 8px;font-size:11px;color:#475569}
+.kcol .kh .sum{margin-left:auto;font-size:11.5px;color:#64748b;font-weight:500}
+.kc{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-bottom:8px;cursor:grab}
+.kc:active{cursor:grabbing}
+.kc.drag{opacity:.4}
+.kc b{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px}
+.kc .m{font-size:12px;color:#64748b;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:12px}
+.gc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px}
+.gc .t{font-weight:600;margin-bottom:5px}
+.gc .r{font-size:12.5px;color:#64748b;display:flex;justify-content:space-between;padding:2px 0}
+
+.cal{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+.cal .cn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #e2e8f0;font-weight:600}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cgrid .dh{background:#f8fafc;padding:7px;text-align:center;font-size:11.5px;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0}
+.cd{min-height:96px;border-right:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;padding:5px}
+.cd .dn{font-size:11.5px;color:#94a3b8;margin-bottom:3px}
+.cd.today .dn{background:#0f172a;color:#fff;border-radius:99px;width:20px;height:20px;display:grid;place-items:center;font-size:11px}
+.ce{background:#eff6ff;border-left:2px solid #3b82f6;border-radius:0 5px 5px 0;padding:2px 5px;font-size:11px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+
+.selbar{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:#0f172a;color:#fff;border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 12px 36px rgba(15,23,42,.3);z-index:50;font-size:13px}
+.selbar button{background:#1e293b;border-radius:8px;padding:6px 11px;font-size:12.5px}
+.selbar button:hover{background:#334155}
+.selbar .c{background:#fff;color:#0f172a;border-radius:99px;padding:1px 9px;font-weight:600;font-size:12px}
+
+.dw{position:fixed;top:0;right:0;bottom:0;width:404px;background:#fff;border-left:1px solid #e2e8f0;box-shadow:-12px 0 40px rgba(15,23,42,.1);z-index:60;display:flex;flex-direction:column}
+.dw .h{padding:14px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:flex-start;gap:10px}
+.dw .h b{font-size:16px}
+.dw .h .x{margin-left:auto;font-size:19px;color:#94a3b8}
+.dw .c{flex:1;overflow:auto;padding:14px 16px}
+.dw .kv{display:grid;grid-template-columns:118px 1fr;gap:7px 10px;font-size:13px;align-items:center}
+.dw .kv span{color:#64748b;font-size:12.5px}
+.dw h4{margin:18px 0 8px;font-size:12px;letter-spacing:.06em;color:#64748b}
+.dw .tl{border-left:2px solid #e2e8f0;padding-left:13px;margin-left:5px}
+.dw .tl .it{position:relative;padding-bottom:12px;font-size:13px}
+.dw .tl .it:before{content:"";position:absolute;left:-18px;top:6px;width:8px;height:8px;border-radius:50%;background:#94a3b8}
+.dw .tl .it small{display:block;color:#94a3b8;font-size:11.5px}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.2);z-index:55}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:#0f172a;color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:9px 12px;font-size:12.5px;color:#92400e;margin-bottom:12px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="topbar"><b>GRANDPRIX PLATFORM</b><span class="tag">View Engine · mockup</span>
+  <span>มุมมองข้อมูลที่ผู้ใช้ตั้งเองได้ — ตาราง · Kanban · ปฏิทิน · แกลเลอรี</span>
+  <span class="sp"></span><button onclick="resetAll()">รีเซ็ต</button></div>
+<div class="app">
+  <aside class="side" id="side"></aside>
+  <div class="main">
+    <div class="hd" id="hd"></div>
+    <div class="tb" id="tb"></div>
+    <div class="body" id="body"></div>
+  </div>
+</div>
+<div id="pop"></div><div id="drawer"></div><div id="toast" class="hide"></div>
+
+<script>
+/* ============ DATA ============ */
+const TH=['ก.ย.','ต.ค.','พ.ย.'];
+function d(m,day){return `2026-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`}
+const EV=['TDE','Souped Up','Runbike'];
+const TIER=['ทั่วไป','เงิน','ทอง','แพลทินัม'];
+const STAT=['รอชำระ','ชำระแล้ว','เตรียมของ','จัดส่งแล้ว','รับของแล้ว'];
+const SC={'รอชำระ':'#fef3c7|#b45309','ชำระแล้ว':'#dbeafe|#1d4ed8','เตรียมของ':'#e0e7ff|#4338ca','จัดส่งแล้ว':'#ede9fe|#6d28d9','รับของแล้ว':'#dcfce7|#15803d'};
+const TC={'ทั่วไป':'#f1f5f9|#475569','เงิน':'#e2e8f0|#334155','ทอง':'#fef3c7|#b45309','แพลทินัม':'#ede9fe|#6d28d9'};
+const NAMES=['ธนพล ตัวอย่าง','ศิริพร ทดสอบ','ภูมิ สมมุติ','มิ้นท์ ตัวอย่าง','ก้อง จำลอง','ปราง ทดลอง','วิชัย สาธิต','นภา ตัวอย่าง','เอก จำลอง','แพร ทดสอบ','ชัย สมมุติ','ฝ้าย สาธิต','ต้น ตัวอย่าง','ใบเตย ทดลอง','โอ๊ต จำลอง','พลอย ทดสอบ','บอส สมมุติ','แอน สาธิต','กิต ตัวอย่าง','หนิง ทดลอง','ปุ๊ก จำลอง','เจ ทดสอบ','มาย สมมุติ','ตูน สาธิต'];
+let rnd=1234567; const R=(n)=>{rnd^=rnd<<13;rnd^=rnd>>>17;rnd^=rnd<<5;rnd|=0;return Math.abs(rnd)%n};
+const PERSON=NAMES.map((n,i)=>{
+  const ne=1+R(3), evs=[]; for(let k=0;k<ne;k++){const e=EV[R(3)]; if(!evs.includes(e))evs.push(e)}
+  const sp=[1200,3400,850,7600,2200,15800,4300,990,6700,2800][R(10)]+R(900);
+  return {id:'C-'+(10021+i),name:n,email:n.split(' ')[0].toLowerCase()+i+'@example.com',phone:'08'+(10000000+R(89999999)),
+    events:evs,nEvents:evs.length,spend:sp,tier:sp>12000?'แพลทินัม':sp>6000?'ทอง':sp>2500?'เงิน':'ทั่วไป',
+    last:d(9,1+R(28)),channel:['LINE','เว็บ','หน้างาน'][R(3)],consent:R(4)>0,noshow:R(5)===0};
+});
+const ORDER=[]; for(let i=0;i<34;i++){
+  const p=PERSON[R(PERSON.length)]; const st=STAT[R(5)];
+  ORDER.push({id:'GP-24'+String(10+i).padStart(2,'0'),cust:p.name,custId:p.id,event:p.events[0],
+    total:[350,690,1200,2400,3700,7000,177,890][R(8)]+R(90),kind:['ตั๋ว','สินค้า','ค่าสมัคร'][R(3)],
+    status:st,ship:R(2)?'รับที่งาน':'จัดส่ง',date:d(9,1+R(28))});
+}
+const F={
+  person:[{k:'name',l:'ชื่อ',t:'avatar',w:190},{k:'tier',l:'ระดับสมาชิก',t:'select',o:TIER,c:TC,w:110},
+    {k:'spend',l:'ยอดใช้จ่าย',t:'money',w:110},{k:'nEvents',l:'จำนวนงาน',t:'num',w:90},
+    {k:'events',l:'งานที่ร่วม',t:'multi',w:170},{k:'channel',l:'ช่องทาง',t:'select',o:['LINE','เว็บ','หน้างาน'],w:95},
+    {k:'consent',l:'รับข่าวสาร',t:'bool',w:95},{k:'last',l:'ล่าสุด',t:'date',w:100},
+    {k:'email',l:'อีเมล',t:'text',w:200},{k:'phone',l:'เบอร์โทร',t:'text',w:120}],
+  order:[{k:'id',l:'เลขที่',t:'code',w:100},{k:'cust',l:'ลูกค้า',t:'avatar',w:170},
+    {k:'status',l:'สถานะ',t:'select',o:STAT,c:SC,w:110},{k:'total',l:'ยอด',t:'money',w:100},
+    {k:'kind',l:'ชนิด',t:'select',o:['ตั๋ว','สินค้า','ค่าสมัคร'],w:95},{k:'event',l:'งาน',t:'select',o:EV,w:110},
+    {k:'ship',l:'รับของ',t:'select',o:['รับที่งาน','จัดส่ง'],w:100},{k:'date',l:'วันที่',t:'date',w:100}]
+};
+const OBJ={
+  person:{n:'ลูกค้า',i:'👥',rows:PERSON,f:F.person,title:r=>r.name},
+  order:{n:'คำสั่งซื้อ',i:'📦',rows:ORDER,f:F.order,title:r=>r.id},
+  reg:{n:'ผู้สมัคร',i:'📝',rows:[],f:[],title:r=>''},
+  product:{n:'สินค้า',i:'🛍️',rows:[],f:[],title:r=>''}
+};
+/* ============ VIEWS ============ */
+const V0={
+ person:[
+  {id:'p1',name:'ลูกค้าทั้งหมด',type:'table',cols:['name','tier','spend','nEvents','events','last'],filters:[],logic:'and',group:'',sort:'spend',dir:'desc'},
+  {id:'p2',name:'แฟนหลายงาน',type:'table',cols:['name','tier','spend','nEvents','events','channel'],filters:[{f:'nEvents',op:'>=',v:'2'}],logic:'and',group:'tier',sort:'spend',dir:'desc'},
+  {id:'p3',name:'ระดับสมาชิก',type:'kanban',cols:['name','spend','events'],filters:[],logic:'and',group:'',sort:'spend',dir:'desc',kb:'tier'},
+  {id:'p4',name:'ยิงแคมเปญได้',type:'gallery',cols:['tier','spend','last'],filters:[{f:'consent',op:'=',v:'true'}],logic:'and',group:'',sort:'spend',dir:'desc'}],
+ order:[
+  {id:'o1',name:'ออเดอร์ทั้งหมด',type:'table',cols:['id','cust','status','total','kind','event','date'],filters:[],logic:'and',group:'',sort:'date',dir:'desc'},
+  {id:'o2',name:'สถานะงาน (Kanban)',type:'kanban',cols:['cust','total','event'],filters:[],logic:'and',group:'',sort:'total',dir:'desc',kb:'status'},
+  {id:'o3',name:'ต้องจัดส่ง',type:'table',cols:['id','cust','status','total','ship','date'],filters:[{f:'ship',op:'=',v:'จัดส่ง'},{f:'status',op:'!=',v:'รับของแล้ว'}],logic:'and',group:'status',sort:'date',dir:'asc'},
+  {id:'o4',name:'ปฏิทินคำสั่งซื้อ',type:'calendar',cols:['id','cust','total'],filters:[],logic:'and',group:'',sort:'date',dir:'asc',cal:'date'}],
+ reg:[],product:[]
+};
+const K='gp_viewengine_v1';
+let S=load(); function load(){try{const s=JSON.parse(localStorage.getItem(K));return s||{views:JSON.parse(JSON.stringify(V0)),cur:{person:'p1',order:'o1'},obj:'person',data:{}}}catch(e){return {views:JSON.parse(JSON.stringify(V0)),cur:{person:'p1',order:'o1'},obj:'person',data:{}}}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function resetAll(){localStorage.removeItem(K);S=load();draft=null;sel={};render();toast('รีเซ็ตแล้ว')}
+let draft=null, sel={}, popOpen=null, drawer=null, q='';
+const $=s=>document.querySelector(s);
+const fmt=n=>'฿'+Number(n).toLocaleString('th-TH');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.className='toast';clearTimeout(t._h);t._h=setTimeout(()=>t.className='hide',2200)}
+function O(){return OBJ[S.obj]}
+function views(){return S.views[S.obj]||[]}
+function view(){return draft||views().find(v=>v.id===S.cur[S.obj])||views()[0]}
+function fld(k){return O().f.find(x=>x.k===k)}
+function rows(){
+  const o=O(); let r=o.rows.map(x=>({...x,...(S.data[x.id]||{})}));
+  const v=view();
+  if(q){const s=q.toLowerCase();r=r.filter(x=>Object.values(x).join(' ').toLowerCase().includes(s))}
+  const tests=v.filters.map(f=>x=>{
+    const F=fld(f.f); let a=x[f.f], b=f.v;
+    if(F&&F.t==='bool'){return (b==='true')===!!a}
+    if(F&&(F.t==='money'||F.t==='num')){a=Number(a);b=Number(b);}
+    if(F&&F.t==='multi'){return f.op==='has'?(a||[]).includes(b):!(a||[]).includes(b)}
+    switch(f.op){case '=':return a==b;case '!=':return a!=b;case '>=':return a>=b;case '<=':return a<=b;
+      case 'contains':return String(a||'').toLowerCase().includes(String(b).toLowerCase());default:return true}
+  });
+  if(tests.length) r=r.filter(x=>v.logic==='or'?tests.some(t=>t(x)):tests.every(t=>t(x)));
+  if(v.sort){const F=fld(v.sort);r.sort((a,b)=>{let x=a[v.sort],y=b[v.sort];
+    if(F&&(F.t==='money'||F.t==='num')){x=+x;y=+y} else {x=String(x);y=String(y)}
+    return (x>y?1:x<y?-1:0)*(v.dir==='desc'?-1:1)})}
+  return r;
+}
+function cell(r,k){
+  const F=fld(k), v=r[k];
+  if(!F) return esc(v??'');
+  switch(F.t){
+    case 'avatar':return `<span class="av">${esc(String(v).slice(0,1))}</span>${esc(v)}`;
+    case 'code':return `<a class="lnk mono" href="javascript:void 0">${esc(v)}</a>`;
+    case 'money':return `<span class="mono">${fmt(v)}</span>`;
+    case 'num':return `<span class="mono">${v}</span>`;
+    case 'bool':return v?'<span class="pill" style="background:#dcfce7;color:#15803d">รับ</span>':'<span class="pill" style="background:#f1f5f9;color:#64748b">ไม่รับ</span>';
+    case 'multi':return (v||[]).map(e=>`<span class="pill" style="background:#f1f5f9;color:#475569;margin-right:3px">${esc(e)}</span>`).join('');
+    case 'select':{const c=(F.c&&F.c[v]||'#f1f5f9|#475569').split('|');return `<span class="pill" style="background:${c[0]};color:${c[1]}">${esc(v)}</span>`}
+    default:return esc(v??'');
+  }
+}
+/* ============ RENDER ============ */
+function render(){
+  const o=O(), v=view();
+  $('#side').innerHTML=`<div class="b">GRANDPRIX<small>Back-office</small></div><div class="grp">ข้อมูล</div>`+
+    Object.entries(OBJ).map(([k,x])=>`<a href="javascript:void 0" class="${S.obj===k?'on':''}" onclick="S.obj='${k}';draft=null;sel={};q='';save();render()">${x.i} ${x.n}<span class="c">${x.rows.length||'—'}</span></a>`).join('')+
+    `<div class="grp">มุมมองของฉัน</div>`+views().map(x=>`<a href="javascript:void 0" class="${v.id===x.id?'on':''}" onclick="pick('${x.id}')">${vi(x.type)} ${esc(x.name)}</a>`).join('');
+  $('#hd').innerHTML=`<h1>${o.i} ${o.n}</h1><div class="sub">${o.rows.length?`${rows().length} จาก ${o.rows.length} รายการ`:'ยังไม่มีข้อมูล'} · มุมมองเป็นของผู้ใช้แต่ละคน แชร์ให้ทีมได้</div>
+    <div class="vtabs">${views().map(x=>`<button class="vtab ${v.id===x.id?'on':''}" onclick="pick('${x.id}')">${vi(x.type)} ${esc(x.name)}${x.shared?'<span class="lk">· แชร์</span>':''}</button>`).join('')}
+    ${o.rows.length?`<button class="vtab add" onclick="newView()">+ มุมมองใหม่</button>`:''}</div>`;
+  $('#tb').innerHTML=o.rows.length?toolbar(v):'';
+  $('#body').innerHTML=o.rows.length?bodyHtml(v):`<div class="empty"><div style="font-size:30px;margin-bottom:8px">${o.i}</div><b style="color:#475569">ยังไม่มีข้อมูล ${o.n}</b><div style="margin-top:6px;font-size:13px">object นี้ใส่ไว้ให้เห็นว่า view engine ใช้กับ object ไหนก็ได้ — ตั้งฟิลด์และมุมมองแบบเดียวกัน</div></div>`;
+  renderSel(); renderDrawer();
+}
+function vi(t){return {table:'▦',kanban:'▤',calendar:'▥',gallery:'▧'}[t]||'▦'}
+function toolbar(v){
+  const nf=v.filters.length;
+  return `<div class="seg">${[['table','ตาราง'],['kanban','Kanban'],['calendar','ปฏิทิน'],['gallery','แกลเลอรี']].map(([t,n])=>
+    `<button class="${v.type===t?'on':''}" onclick="setV('type','${t}')">${vi(t)} ${n}</button>`).join('')}</div>
+  <button class="tbtn ${nf?'act':''}" onclick="pop('filter',this)">⚙ ฟิลเตอร์${nf?`<span class="n">${nf}</span>`:''}</button>
+  <button class="tbtn ${v.group?'act':''}" onclick="pop('group',this)">▤ จัดกลุ่ม${v.group?`<span class="n">1</span>`:''}</button>
+  <button class="tbtn" onclick="pop('sort',this)">↕ เรียง</button>
+  <button class="tbtn" onclick="pop('cols',this)">▥ คอลัมน์ <span class="n">${v.cols.length}</span></button>
+  <input class="srch" placeholder="ค้นหา…" value="${esc(q)}" oninput="q=this.value;render()">
+  <span class="sp"></span>
+  ${draft?`<span class="dirty">● แก้ไขแล้วยังไม่บันทึก <button class="tbtn" onclick="draft=null;render()">ทิ้ง</button><button class="save" onclick="saveView()">บันทึกมุมมอง</button><button class="tbtn" onclick="saveAs()">บันทึกเป็นใหม่</button></span>`
+    :`<button class="tbtn" onclick="shareView()">↗ แชร์</button>`}`;
+}
+function bodyHtml(v){
+  const r=rows();
+  const note=`<div class="note"><b>นี่คือ view engine</b> — ข้อมูลชุดเดียวกัน แต่ผู้ใช้เลือกเองได้ว่าจะดูแบบไหน กรองอะไร จัดกลุ่มยังไง เห็นคอลัมน์ไหน แล้วบันทึกไว้ใช้ซ้ำและแชร์ให้ทีม · ลองลากการ์ดใน Kanban หรือคลิกช่องในตารางเพื่อแก้ค่าได้เลย</div>`;
+  if(!r.length) return note+`<div class="empty">ไม่มีรายการที่ตรงกับเงื่อนไข</div>`;
+  if(v.type==='kanban') return note+kanban(v,r);
+  if(v.type==='gallery') return note+gallery(v,r);
+  if(v.type==='calendar') return note+calendar(v,r);
+  return note+table(v,r);
+}
+function table(v,r){
+  const cols=v.cols.filter(fld);
+  let body='';
+  const grp=v.group;
+  if(grp){
+    const m=new Map();
+    r.forEach(x=>{const g=Array.isArray(x[grp])?(x[grp][0]||'—'):(x[grp]??'—');(m.get(g)||m.set(g,[]).get(g)).push(x)});
+    [...m.entries()].forEach(([g,list])=>{
+      body+=`<tr class="gh"><td colspan="${cols.length+1}">▾ ${esc(g)}<span class="cn">${list.length} รายการ${list[0].total!==undefined?' · '+fmt(list.reduce((a,b)=>a+b.total,0)):list[0].spend!==undefined?' · '+fmt(list.reduce((a,b)=>a+b.spend,0)):''}</span></td></tr>`;
+      list.forEach(x=>body+=tr(x,cols));
+    });
+  } else r.forEach(x=>body+=tr(x,cols));
+  return `<table><thead><tr><th style="width:34px"><input type="checkbox" onchange="selAll(this.checked)"></th>
+    ${cols.map(k=>{const F=fld(k);return `<th class="${v.sort===k?'srt':''}" style="width:${F.w}px" onclick="setSort('${k}')">${F.l}${v.sort===k?(v.dir==='desc'?' ↓':' ↑'):''}</th>`}).join('')}</tr></thead><tbody>${body}</tbody></table>`;
+}
+function tr(x,cols){
+  return `<tr class="${sel[x.id]?'sel':''}"><td><input type="checkbox" ${sel[x.id]?'checked':''} onchange="sel['${x.id}']=this.checked;render()"></td>`+
+    cols.map((k,i)=>`<td class="${fld(k).t==='avatar'||fld(k).t==='code'?'':'ed'}" ${fld(k).t==='avatar'||fld(k).t==='code'?`onclick="open_('${x.id}')" style="cursor:pointer"`:`onclick="edit(this,'${x.id}','${k}')"`}>${cell(x,k)}</td>`).join('')+'</tr>';
+}
+function kanban(v,r){
+  const key=v.kb||O().f.find(f=>f.t==='select').k, F=fld(key);
+  const groups=F.o||[...new Set(r.map(x=>x[key]))];
+  return `<div class="kb">${groups.map(g=>{
+    const list=r.filter(x=>x[key]===g);
+    const sum=list.reduce((a,b)=>a+(b.total||b.spend||0),0);
+    const c=(F.c&&F.c[g]||'#e2e8f0|#475569').split('|');
+    return `<div class="kcol" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="drop(event,'${key}','${g}')">
+      <div class="kh"><span class="pill" style="background:${c[0]};color:${c[1]}">${esc(g)}</span><span class="n">${list.length}</span><span class="sum">${sum?fmt(sum):''}</span></div>
+      ${list.map(x=>`<div class="kc" draggable="true" ondragstart="drag(event,'${x.id}')" ondragend="this.classList.remove('drag')" onclick="open_('${x.id}')">
+        <b>${esc(O().title(x))}</b><div class="m">${v.cols.filter(k=>k!==key&&fld(k)).slice(0,3).map(k=>cell(x,k)).join('<span style="color:#cbd5e1">·</span>')}</div></div>`).join('')||'<div style="color:#94a3b8;font-size:12.5px;padding:10px 5px">ว่าง</div>'}
+    </div>`}).join('')}</div>
+  <div style="color:#64748b;font-size:12.5px;margin-top:10px">ลากการ์ดข้ามคอลัมน์เพื่อเปลี่ยน <b>${F.l}</b> — นี่คือ pipeline ที่ตั้งค่าได้ ไม่ใช่สถานะที่ฝังในโค้ด</div>`;
+}
+function gallery(v,r){
+  return `<div class="gal">${r.map(x=>`<div class="gc" onclick="open_('${x.id}')" style="cursor:pointer">
+    <div class="t"><span class="av">${esc(O().title(x).slice(0,1))}</span>${esc(O().title(x))}</div>
+    ${v.cols.filter(k=>fld(k)&&fld(k).t!=='avatar'&&fld(k).t!=='code').map(k=>`<div class="r"><span>${fld(k).l}</span><span>${cell(x,k)}</span></div>`).join('')}
+  </div>`).join('')}</div>`;
+}
+function calendar(v,r){
+  const key=v.cal||O().f.find(f=>f.t==='date').k;
+  const first=new Date('2026-09-01'), start=first.getDay(), days=30;
+  let cells='';
+  for(let i=0;i<start;i++) cells+='<div class="cd" style="background:#fafbfd"></div>';
+  for(let dd=1;dd<=days;dd++){
+    const ds=d(9,dd), list=r.filter(x=>x[key]===ds);
+    cells+=`<div class="cd ${dd===18?'today':''}"><div class="dn">${dd}</div>${list.slice(0,3).map(x=>`<div class="ce" onclick="open_('${x.id}')">${esc(O().title(x))}${x.total?' · '+fmt(x.total):''}</div>`).join('')}${list.length>3?`<div style="font-size:11px;color:#94a3b8">+${list.length-3} รายการ</div>`:''}</div>`;
+  }
+  return `<div class="cal"><div class="cn">กันยายน 2026 <span style="font-weight:400;color:#64748b;font-size:12.5px">· วางตามฟิลด์ “${fld(key).l}”</span></div>
+    <div class="cgrid">${['อา','จ','อ','พ','พฤ','ศ','ส'].map(x=>`<div class="dh">${x}</div>`).join('')}${cells}</div></div>`;
+}
+/* ============ INTERACTIONS ============ */
+function pick(id){draft=null;S.cur[S.obj]=id;sel={};save();render()}
+function mut(){if(!draft)draft=JSON.parse(JSON.stringify(view()));return draft}
+function setV(k,val){const v=mut();v[k]=val;
+  if(k==='type'&&val==='kanban'&&!v.kb){const f=O().f.find(f=>f.t==='select');v.kb=f&&f.k}
+  if(k==='type'&&val==='calendar'&&!v.cal){const f=O().f.find(f=>f.t==='date');v.cal=f&&f.k}
+  closePop();render()}
+function setSort(k){const v=mut();v.dir=(v.sort===k&&v.dir==='asc')?'desc':'asc';v.sort=k;render()}
+function saveView(){const i=S.views[S.obj].findIndex(x=>x.id===draft.id);S.views[S.obj][i]=draft;draft=null;save();render();toast('บันทึกมุมมองแล้ว')}
+function saveAs(){const n=prompt('ชื่อมุมมองใหม่','สำเนาของ '+draft.name);if(!n)return;
+  const v={...draft,id:'v'+Date.now(),name:n};S.views[S.obj].push(v);S.cur[S.obj]=v.id;draft=null;save();render();toast('สร้างมุมมอง "'+n+'" แล้ว')}
+function newView(){const n=prompt('ชื่อมุมมอง','มุมมองใหม่');if(!n)return;
+  const o=O();const v={id:'v'+Date.now(),name:n,type:'table',cols:o.f.slice(0,5).map(f=>f.k),filters:[],logic:'and',group:'',sort:o.f[0].k,dir:'asc'};
+  S.views[S.obj].push(v);S.cur[S.obj]=v.id;draft=null;save();render();toast('สร้างมุมมอง "'+n+'" แล้ว')}
+function shareView(){const v=view();v.shared=!v.shared;save();render();toast(v.shared?'แชร์มุมมองนี้ให้ทีมแล้ว — ทุกคนเห็นเงื่อนไขและคอลัมน์ชุดเดียวกัน':'เลิกแชร์แล้ว')}
+function edit(td,id,k){
+  const F=fld(k), row=O().rows.find(x=>x.id===id), cur=(S.data[id]&&S.data[id][k])??row[k];
+  if(F.t==='multi'||F.t==='avatar'||F.t==='code')return;
+  let el;
+  if(F.t==='select'){el=document.createElement('select');F.o.forEach(o=>{const op=document.createElement('option');op.value=op.textContent=o;el.appendChild(op)});el.value=cur}
+  else if(F.t==='bool'){el=document.createElement('select');[['true','รับ'],['false','ไม่รับ']].forEach(([v,t])=>{const op=document.createElement('option');op.value=v;op.textContent=t;el.appendChild(op)});el.value=String(!!cur)}
+  else {el=document.createElement('input');el.type=(F.t==='money'||F.t==='num')?'number':(F.t==='date'?'date':'text');el.value=cur}
+  td.innerHTML='';td.appendChild(el);el.focus();
+  const done=()=>{let v=el.value;if(F.t==='money'||F.t==='num')v=+v;if(F.t==='bool')v=(v==='true');
+    S.data[id]={...(S.data[id]||{}),[k]:v};save();render();};
+  el.onblur=done; el.onkeydown=e=>{if(e.key==='Enter')el.blur();if(e.key==='Escape')render()};
+  if(F.t==='select'||F.t==='bool')el.onchange=done;
+}
+let dragId=null;
+function drag(e,id){dragId=id;e.target.classList.add('drag');e.dataTransfer.effectAllowed='move'}
+function drop(e,key,val){e.preventDefault();document.querySelectorAll('.kcol').forEach(c=>c.classList.remove('over'));
+  if(!dragId)return;S.data[dragId]={...(S.data[dragId]||{}),[key]:val};save();render();toast('ย้าย '+dragId+' → '+val);dragId=null}
+function selAll(on){rows().forEach(x=>sel[x.id]=on);render()}
+function renderSel(){
+  const n=Object.values(sel).filter(Boolean).length;
+  const old=document.querySelector('.selbar'); if(old)old.remove();
+  if(!n)return;
+  const b=document.createElement('div');b.className='selbar';
+  b.innerHTML=`<span class="c">${n}</span> เลือกอยู่
+    <button onclick="bulk('แก้ค่าเป็นชุด')">แก้ค่าเป็นชุด</button>
+    <button onclick="bulk('สร้างกลุ่มเป้าหมาย')">สร้างเป็น segment</button>
+    <button onclick="bulk('ส่งแคมเปญ')">ส่งแคมเปญ</button>
+    <button onclick="bulk('export CSV')">export CSV</button>
+    <button onclick="sel={};render()">ยกเลิก</button>`;
+  document.body.appendChild(b);
+}
+function bulk(a){toast(a+' · '+Object.values(sel).filter(Boolean).length+' รายการ (ตัวอย่าง)')}
+function open_(id){drawer=id;render()}
+function renderDrawer(){
+  const el=$('#drawer'); if(!drawer){el.innerHTML='';return}
+  const row=O().rows.find(x=>x.id===drawer); if(!row){el.innerHTML='';return}
+  const r={...row,...(S.data[drawer]||{})};
+  el.innerHTML=`<div class="ov" onclick="drawer=null;render()"></div><div class="dw">
+    <div class="h"><span class="av" style="width:36px;height:36px;font-size:14px">${esc(O().title(r).slice(0,1))}</span>
+      <div><b>${esc(O().title(r))}</b><div style="color:#64748b;font-size:12.5px">${O().n} · ${esc(r.id)}</div></div>
+      <button class="x" onclick="drawer=null;render()">✕</button></div>
+    <div class="c">
+      <div class="kv">${O().f.map(f=>`<span>${f.l}</span><div>${cell(r,f.k)}</div>`).join('')}</div>
+      <h4>TIMELINE</h4>
+      <div class="tl">${[['สร้างรายการ',r.date||r.last],['ชำระเงินสำเร็จ',r.date||r.last],['ได้รับแคมเปญ “ชวนกลับมา”','12 ก.ย. 2026'],['เปิดอ่าน','12 ก.ย. 2026']].map(([t,dd])=>`<div class="it">${t}<small>${dd}</small></div>`).join('')}</div>
+      <h4>งานที่ต้องทำ</h4>
+      <div style="font-size:13px;color:#64748b;border:1px dashed #cbd5e1;border-radius:9px;padding:12px;text-align:center">ยังไม่มีโมดูล Activity &amp; Task<br><span style="font-size:12px">(ชิ้นที่ 5 ใน 10 ชิ้นของเครื่องยนต์)</span></div>
+    </div></div>`;
+}
+/* ============ POPOVERS ============ */
+function closePop(){popOpen=null;$('#pop').innerHTML=''}
+function pop(kind,btn){
+  if(popOpen===kind){closePop();return}
+  popOpen=kind; const v=view(), r=btn.getBoundingClientRect();
+  let h='';
+  if(kind==='filter'){
+    h=`<h4>เงื่อนไข</h4>${v.filters.map((f,i)=>`<div class="row">
+      ${i===0?'<span class="lgc">เมื่อ</span>':`<select onchange="mut().logic=this.value;render();pop('filter',document.querySelector('.tbtn'))"><option value="and" ${v.logic==='and'?'selected':''}>และ</option><option value="or" ${v.logic==='or'?'selected':''}>หรือ</option></select>`}
+      <select onchange="setF(${i},'f',this.value)">${O().f.map(x=>`<option value="${x.k}" ${f.f===x.k?'selected':''}>${x.l}</option>`).join('')}</select>
+      <select onchange="setF(${i},'op',this.value)">${ops(f.f).map(o=>`<option value="${o[0]}" ${f.op===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+      ${valInput(f,i)}
+      <button class="x" onclick="delF(${i})">✕</button></div>`).join('')}
+      <button class="addf" onclick="addF()">+ เพิ่มเงื่อนไข</button>
+      <div class="hint">เงื่อนไขผูกกับ <b>มุมมอง</b> ไม่ใช่กับหน้าจอ — เปลี่ยนแล้วกดบันทึกเพื่อให้ทีมเห็นเหมือนกัน</div>`;
+  }
+  if(kind==='group'){
+    h=`<h4>จัดกลุ่มตาม</h4><div class="row"><select style="width:100%" onchange="setV('group',this.value)">
+      <option value="">ไม่จัดกลุ่ม</option>${O().f.filter(f=>['select','bool','num'].includes(f.t)).map(f=>`<option value="${f.k}" ${v.group===f.k?'selected':''}>${f.l}</option>`).join('')}</select></div>
+      <div class="hint">จัดกลุ่มแล้วจะมีแถวหัวกลุ่มพร้อมยอดรวมให้อัตโนมัติ</div>`;
+  }
+  if(kind==='sort'){
+    h=`<h4>เรียงตาม</h4><div class="row"><select onchange="mut().sort=this.value;render()">${O().f.map(f=>`<option value="${f.k}" ${v.sort===f.k?'selected':''}>${f.l}</option>`).join('')}</select>
+      <select onchange="mut().dir=this.value;render()"><option value="asc" ${v.dir==='asc'?'selected':''}>น้อย → มาก</option><option value="desc" ${v.dir==='desc'?'selected':''}>มาก → น้อย</option></select></div>
+      <div class="hint">กดหัวคอลัมน์ในตารางก็เรียงได้เหมือนกัน</div>`;
+  }
+  if(kind==='cols'){
+    h=`<h4>คอลัมน์ที่แสดง</h4>${O().f.map(f=>`<label class="ck"><input type="checkbox" ${v.cols.includes(f.k)?'checked':''} onchange="tglCol('${f.k}')"> ${f.l}</label>`).join('')}
+      <div class="hint">ผู้ใช้เลือกเองได้ว่าจะเห็นฟิลด์ไหน — ฟิลด์ที่ตั้งเพิ่มเองก็โผล่ในรายการนี้อัตโนมัติ</div>`;
+  }
+  $('#pop').innerHTML=`<div class="pop" style="left:${Math.min(r.left,window.innerWidth-380)}px;top:${r.bottom+6}px">${h}</div>`;
+}
+function ops(k){const F=fld(k);
+  if(!F)return [['=','เท่ากับ']];
+  if(F.t==='money'||F.t==='num')return [['=','เท่ากับ'],['>=','มากกว่าเท่ากับ'],['<=','น้อยกว่าเท่ากับ']];
+  if(F.t==='multi')return [['has','มี'],['nothas','ไม่มี']];
+  if(F.t==='bool')return [['=','เป็น']];
+  if(F.t==='select')return [['=','เท่ากับ'],['!=','ไม่เท่ากับ']];
+  return [['contains','มีคำว่า'],['=','เท่ากับ']];
+}
+function valInput(f,i){const F=fld(f.f);
+  if(F.t==='bool')return `<select onchange="setF(${i},'v',this.value)"><option value="true" ${f.v==='true'?'selected':''}>รับ</option><option value="false" ${f.v==='false'?'selected':''}>ไม่รับ</option></select>`;
+  if(F.t==='select'||F.t==='multi'){const o=F.o||EV;return `<select onchange="setF(${i},'v',this.value)">${o.map(x=>`<option ${f.v===x?'selected':''}>${x}</option>`).join('')}</select>`}
+  return `<input style="width:86px" value="${esc(f.v)}" oninput="setF(${i},'v',this.value,1)">`;
+}
+function setF(i,k,val,quiet){const v=mut();v.filters[i][k]=val;
+  if(k==='f'){v.filters[i].op=ops(val)[0][0];const F=fld(val);v.filters[i].v=F.t==='bool'?'true':(F.o?F.o[0]:'')}
+  render(); if(!quiet)pop('filter',document.querySelector('.tbtn'));}
+function addF(){const v=mut(),f=O().f[0];v.filters.push({f:f.k,op:ops(f.k)[0][0],v:f.o?f.o[0]:''});render();pop('filter',document.querySelector('.tbtn'))}
+function delF(i){const v=mut();v.filters.splice(i,1);render();pop('filter',document.querySelector('.tbtn'))}
+function tglCol(k){const v=mut();const i=v.cols.indexOf(k);i<0?v.cols.push(k):v.cols.splice(i,1);render();
+  $('#pop').innerHTML='';popOpen=null;pop('cols',[...document.querySelectorAll('.tbtn')].find(b=>b.textContent.includes('คอลัมน์')))}
+document.addEventListener('click',e=>{if(popOpen&&!e.target.closest('.pop')&&!e.target.closest('.tbtn'))closePop()});
+render();
+</script>
+</body>
+</html>

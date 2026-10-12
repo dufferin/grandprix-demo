@@ -1789,6 +1789,7 @@ select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;backg
 .spg-note div>b{display:block}.spg-note small b{display:inline}
 .a2-cs{display:flex;flex-direction:column;gap:8px}.a2-cs-h{font-size:12px;color:#6B7280;margin-top:4px}.a2-cb input{width:16px;height:16px;margin-top:3px;flex:none;accent-color:#111}.a2-cb small{color:#9CA3AF}
 .nopf .pfo,.nopf a.lx-card[href^="#/platform"]{display:none!important}html:not(.nopf) .pfx{display:none}
+.a2-pv{background:#111827;color:#E5E7EB;font-size:13px;padding:10px 16px;text-align:center}.a2-pv a{color:#D1FF03;text-decoration:underline;margin-left:6px}
 </style>
 </head>
 <body>
@@ -2102,7 +2103,7 @@ function pageLauncher(){
     <a class="lx-card" href="#/souped-up"><div class="top" style="background:#0a0b0d"><img src="assets/logo-main.png" alt="Souped Up"></div><div class="bd"><h3>Souped Up Grand Prix</h3><p>เลือกบริการ → สรุปยอดค่าสมัคร + ของที่ระลึก</p></div></a>
     <a class="lx-card" href="#/runbike"><div class="top" style="background:#001529"><img src="assets/gprc-logo.png" alt="GPRC"></div><div class="bd"><h3>GPRC Runbike</h3><p>ประวัติการลงทะเบียน → สรุปยอด + ของที่ระลึก</p></div></a>
     <a class="lx-card" href="#/store"><div class="top" style="background:#fff;color:#111"><div class="rl-logo" style="font-size:22px">ร้านค้ากรังด์ปรีซ์</div></div><div class="bd"><h3>ร้านค้า (หน้ารวมสินค้า)</h3><p><b style="color:#d4f53c">ไม่ใช่เว็บแยก</b> — เป็นหน้าหนึ่งของแพลตฟอร์มเดียวกัน อยู่ใต้ shop.grandprix.co.th · สินค้าชุดนี้ซื้อได้จากหน้าแรกและหน้าสรุปยอดของแต่ละงานอยู่แล้ว</p></div></a>
-    <a class="lx-card" href="#/account?from=souped-up"><div class="top" style="background:#15171c"><div class="gpa-brand"><span class="dot">G</span>GRANDPRIX ACCOUNT</div></div><div class="bd"><h3>หน้า login กลาง</h3><p>login เดียว มีโลโกทุกงาน · สมัคร + OTP ทาง email</p></div></a>
+    <a class="lx-card" href="#/account?from=souped-up&preview=1"><div class="top" style="background:#15171c"><div class="gpa-brand"><span class="dot">G</span>GRANDPRIX ACCOUNT</div></div><div class="bd"><h3>หน้า login กลาง</h3><p>login เดียว มีโลโกทุกงาน · สมัคร + OTP ทาง email</p></div></a>
     <a class="lx-card" href="#/me"><div class="top" style="background:#0e0f12"><div class="gpa-brand"><span class="dot">G</span>บัญชีของฉัน</div></div><div class="bd"><h3>บัญชีของฉัน</h3><p>ข้อมูลส่วนตัว · ที่อยู่ & ใบกำกับภาษี · กิจกรรมทุกงาน (ไม่มีหน้า portal / ไม่มี logout)</p></div></a>
     <a class="lx-card" href="#/admin"><div class="top" style="background:#0f172a"><div class="gpa-brand" style="color:#fff">BACK-OFFICE</div></div><div class="bd"><h3>Back-office</h3><p>CRM + จัดอันดับลูกค้า, สินค้า/ตัวเลือก, โค้ดส่วนลด<br><b style="color:#d4f53c">v2:</b> กลุ่มลูกค้า · แคมเปญ · ระดับสมาชิก · ยอดใช้งาน</p></div></a>
     <a class="lx-card" href="#/admin/views?obj=person"><div class="top" style="background:#0f172a"><div class="gpa-brand" style="color:#fff"><span class="dot" style="background:#fff;color:#0f172a">V</span>VIEW ENGINE</div></div><div class="bd"><h3>View Engine <b style="color:#d4f53c;font-size:12px">ใหม่</b></h3><p>อยู่ใน Back-office — มุมมองข้อมูลที่ผู้ใช้ตั้งเองได้: ตาราง · Kanban · ปฏิทิน · แกลเลอรี · ฟิลเตอร์ · จัดกลุ่ม · เลือกคอลัมน์ · แก้ค่าในตาราง · บันทึกและแชร์มุมมอง<br>ใช้ข้อมูลชุดเดียวกับหน้า CRM และ Order</p></div></a>
@@ -2147,7 +2148,7 @@ function pageAccount(q){
   const to=q.to||'';
   const src={tde:{n:'TDE Online Ticket',b:'TDE',c:'#FFE600'},'souped-up':{n:'Souped Up Grand Prix 2026',b:'SU',c:'#6FFFE8'},runbike:{n:'GPRC Runbike',b:'RB',c:'#FF4D4F'},store:{n:'Grandprix Marketplace',b:'MK',c:'#fff'},admin:{n:'Back-office',b:'BO',c:'#fff'},me:{n:'บัญชีของฉัน',b:'G',c:'#D1FF03'}}[from]||{n:'Grandprix',b:'G',c:'#D1FF03'};
   const back=dest(from,to);
-  if(S.user) { setTimeout(()=>go(back),0); return '' }
+  if(S.user&&!q.preview) { setTimeout(()=>go(back),0); return '' }   // มาจาก Sign In ของงาน = SSO พากลับเลย · ?preview=1 = เปิดดูหน้า login จากสารบัญ demo
   const isLine=gpaStep==='line'||gpaStep==='lineinfo';
   const fromBox=from!=='me'?`<div class="a2-from"><span class="b" style="color:${src.c}">${src.b}</span><span>กำลังเข้าสู่ <b>${esc(src.n)}</b> ด้วย Grandprix Account</span></div>`:'';
   const ck='<span class="a2-ck">✓</span>';
@@ -2216,7 +2217,8 @@ function pageAccount(q){
     <div class="a2-g2"><label class="a2-f"><span>ประเทศ</span><select><option>ไทย</option><option>อื่น ๆ</option></select></label><label class="a2-f"><span>รหัสผ่าน</span><input type="password" placeholder="อย่างน้อย 8 ตัวอักษร"></label></div>
     ${consentBox()}
     <button class="a2-btn" onclick="startOtp()">สมัครสมาชิก (ยืนยันทาง email)</button>`}`;
-  return `<div class="a2">${left}
+  const pv=S.user&&q.preview?`<div class="a2-pv">ตอนนี้ login อยู่แล้วในชื่อ <b>${esc(S.user.name)}</b> — หน้านี้เปิดให้ดูหน้าตา login กลาง · <a href="#/me">ไปบัญชีของฉัน →</a></div>`:'';
+  return pv+`<div class="a2">${left}
   <div class="a2-right"><div class="a2-form">${form}
     ${from==='me'||isLine?'':`<a class="a2-back" href="${back}">← กลับ</a>`}
   </div></div></div>`;
@@ -2290,7 +2292,7 @@ function pageSU(){
     <a href="#/souped-up"><img src="assets/logo-main.png" alt="Souped Up Grand Prix 2026"></a>
     <nav class="links"><a class="on" href="#/souped-up">Home</a><a href="javascript:needLogin('souped-up')&&toast('หน้า History (เดิม)')">History</a><a href="#/store?event=SOUPED_UP">Merch</a></nav>
     <span class="sp"></span><span class="su-lang"><span>TH</span><span class="on">EN</span></span>
-    ${chip||`<a class="su-btn" style="padding:7px 14px;font-size:14px" href="#/account?from=souped-up">Sign In</a>`}
+    ${chip||`<a class="su-btn" style="padding:7px 14px;font-size:14px" href="#/account?from=souped-up&preview=1">Sign In</a>`}
   </div></header>
   ${ssoBanner('souped-up')}
   ${closedNote('SOUPED_UP')}

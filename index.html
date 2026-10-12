@@ -1788,6 +1788,7 @@ select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;backg
 @media(max-width:560px){.modal .bd.one>.g2{grid-template-columns:1fr}}
 .spg-note div>b{display:block}.spg-note small b{display:inline}
 .a2-cs{display:flex;flex-direction:column;gap:8px}.a2-cs-h{font-size:12px;color:#6B7280;margin-top:4px}.a2-cb input{width:16px;height:16px;margin-top:3px;flex:none;accent-color:#111}.a2-cb small{color:#9CA3AF}
+.nopf .pfo,.nopf a.lx-card[href^="#/platform"]{display:none!important}html:not(.nopf) .pfx{display:none}
 </style>
 </head>
 <body>
@@ -1798,6 +1799,10 @@ select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;backg
 <div id="toast" class="toast hide"></div>
 
 <script>
+/* ซ่อน Platform Console บนเว็บที่เผยแพร่ (GitHub Pages) หรือเมื่อเปิดด้วย ?nopf */
+const NO_PF=/\.github\.io$/.test(location.hostname)||/[?&]nopf\b/.test(location.search);
+if(NO_PF)document.documentElement.classList.add('nopf');
+
 /* ============================================================
    DEMO DATA  (ตัวอย่างทั้งหมด — ไม่ใช่ข้อมูลจริงของลูกค้า)
    ============================================================ */
@@ -1910,7 +1915,7 @@ const KIND={reg:'ค่าสมัคร',ticket:'ตั๋ว / บัตร',
    SHARED PIECES
    ============================================================ */
 function demoBar(active){
-  const L=[['#/','สารบัญ demo'],['#/tde','TDE'],['#/souped-up','Souped Up'],['#/runbike','Runbike'],['#/store','ร้านค้า (ในแพลตฟอร์ม)'],['#/me','บัญชีของฉัน'],['#/line','LINE OA'],['#/admin','Back-office'],['#/platform','Platform (แอพกลาง)']];
+  const L=[['#/','สารบัญ demo'],['#/tde','TDE'],['#/souped-up','Souped Up'],['#/runbike','Runbike'],['#/store','ร้านค้า (ในแพลตฟอร์ม)'],['#/me','บัญชีของฉัน'],['#/line','LINE OA'],['#/admin','Back-office'],...(NO_PF?[]:[['#/platform','Platform (แอพกลาง)']])];
   $('#demobar').innerHTML=`<b>GRANDPRIX DEMO</b><span class="tag">v2 · Option A + แอพกลาง</span>
   ${L.map(([h,t])=>`<a href="${h}" class="${active===h?'on':''}">${t}</a>`).join('')}
   <span class="sp"></span>
@@ -2115,10 +2120,11 @@ function pageLauncher(){
     <li>กดปุ่มแชทมุมขวาล่าง (<b>มีเฉพาะในร้านค้า</b>) → ส่งข้อความ → เปิด <a href="#/admin/chat" style="text-decoration:underline">Back-office › แชท</a> ตอบกลับ (เปิด 2 แท็บคู่กันจะเห็น real-time)</li>
     <li>ดู <a href="#/me" style="text-decoration:underline">บัญชีของฉัน</a> — ข้อมูล / กิจกรรมรวมทุกงาน · สลับ role เป็น event-admin ในหลังบ้านเพื่อดูการจำกัดสิทธิ์</li>
   </ol>
-  <b style="display:block;margin-top:18px">ของใหม่ใน v2 — แอพกลางที่ขายต่อเจ้าอื่นได้</b><ol start="10">
-    <li>เปิด <a href="#/platform" style="text-decoration:underline">Platform Console</a> → เห็นลูกค้า 3 ราย (กรังด์ปรีซ์ + ตัวอย่างอีก 2 ราย) พร้อมค่าบริการต่อปีของแต่ละราย</li>
-    <li>คลิก tenant ใด ๆ → ดูแบรนด์ โดเมน payment gateway และ LINE OA ของลูกค้ารายนั้น (คนละบัญชีกัน เงินเข้าบัญชีลูกค้าตรง)</li>
-    <li>ที่ tenant <b>กรังด์ปรีซ์</b> → สลับแพ็ก <b>Basic / Plus</b> → กลับไป <a href="#/admin" style="text-decoration:underline">Back-office</a>: แพ็ก Basic เห็นเมนู Plus (แคมเปญ · สินค้าแนะนำจากสปอนเซอร์) ติดกุญแจ กดแล้วเจอหน้าชวนอัปเกรด · ปิดโมดูลแล้วเมนูหายจริง</li>
+  <b style="display:block;margin-top:18px">${NO_PF?'ลองต่อในหลังบ้าน':'ของใหม่ใน v2 — แอพกลางที่ขายต่อเจ้าอื่นได้'}</b><ol start="10">
+    <li class="pfx">สลับแพ็ก <b>Basic / Plus</b> ที่ <a href="#/admin/billing" style="text-decoration:underline">Back-office › แพ็กเกจ &amp; ค่าบริการ</a> → แพ็ก Basic เห็นเมนู Plus ติดกุญแจ · อัปเกรดแล้วเมนูเปิดทันที</li>
+    <li class="pfo">เปิด <a href="#/platform" style="text-decoration:underline">Platform Console</a> → เห็นลูกค้า 3 ราย (กรังด์ปรีซ์ + ตัวอย่างอีก 2 ราย) พร้อมค่าบริการต่อปีของแต่ละราย</li>
+    <li class="pfo">คลิก tenant ใด ๆ → ดูแบรนด์ โดเมน payment gateway และ LINE OA ของลูกค้ารายนั้น (คนละบัญชีกัน เงินเข้าบัญชีลูกค้าตรง)</li>
+    <li class="pfo">ที่ tenant <b>กรังด์ปรีซ์</b> → สลับแพ็ก <b>Basic / Plus</b> → กลับไป <a href="#/admin" style="text-decoration:underline">Back-office</a>: แพ็ก Basic เห็นเมนู Plus (แคมเปญ · สินค้าแนะนำจากสปอนเซอร์) ติดกุญแจ กดแล้วเจอหน้าชวนอัปเกรด · ปิดโมดูลแล้วเมนูหายจริง</li>
     <li><a href="#/admin/products" style="text-decoration:underline">Back-office › สินค้า</a> → <b>+ เพิ่มสินค้า</b> (modal: รูป · ตัวเลือก + สต็อกแยก · งานที่ขาย · การรับของ · ตัวอย่างหน้าร้าน)</li>
     <li><a href="#/admin/segments" style="text-decoration:underline">Back-office › ลูกค้า › กลุ่มลูกค้า</a> → 8 กลุ่มสำเร็จรูปคำนวณสดจากข้อมูลใน demo → ลองสร้างกลุ่มเองจากเงื่อนไข</li>
     <li><a href="#/admin/campaigns" style="text-decoration:underline">Back-office › แคมเปญ</a> → เลือกกลุ่ม + ช่องทาง → เห็นค่าส่งก่อนยิง → ส่ง → ดูผลย้อนกลับถึงยอดขาย</li>
@@ -4793,6 +4799,7 @@ function render(){
   else if(path.startsWith('/go/')){html=pageSponGo(path.split('/')[2]);bar='#/store'}
   else if(path==='/admin/chat'){html=pageAdminChat();bar='#/admin'}
   else if(path==='/line'){html=pageLine(q);bar='#/line'}
+  else if(NO_PF&&path.startsWith('/platform')){location.hash='#/';return}
   else if(path==='/platform'){html=pagePlatform();bar='#/platform'}
   else if(path.startsWith('/platform/t/')){html=pageTenant(path.split('/')[3]);bar='#/platform'}
   else html=pageLauncher();

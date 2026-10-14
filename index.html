@@ -4159,6 +4159,7 @@ function vWrite(id,k,v){
   if(vObj==='shipment'){setShip(id,k,v);return}
   veS().data[id]={...(veS().data[id]||{}),[k]:v};save();render()}
 function vEdit(td,id,k){
+  if(td.querySelector('select,input')) return;   // กำลังแก้อยู่ — คลิกที่ dropdown เองไม่ต้องสร้างใหม่ (เดิมทำให้กระพริบ)
   const F=vFld(k); if(!F||['multi','avatar','code'].includes(F.t)||!vEditable(k)) return;
   const base=vO().rows.find(x=>x.id===id); if(!base) return;
   const cur=vObj==='person'?((veS().data[id]&&veS().data[id][k])??base[k]):base[k];
@@ -4173,7 +4174,9 @@ function vEdit(td,id,k){
     el.type=(F.t==='money'||F.t==='num')?'number':(F.t==='date'?'date':'text');
     el.value=cur;
   }
+  el.onclick=e=>e.stopPropagation();el.onmousedown=e=>e.stopPropagation();
   td.innerHTML='';td.appendChild(el);el.focus();
+  if(el.tagName==='SELECT'){try{el.showPicker()}catch(e){}}
   let fired=0;
   const done=()=>{if(fired++)return;let v=el.value;if(F.t==='money'||F.t==='num')v=+v;if(F.t==='bool')v=(v==='true');
     if(v===cur){render();return}vWrite(id,k,v)};
